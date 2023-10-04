@@ -1,0 +1,93 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!--CSS-->
+    <link href="~/css/site.css" rel="stylesheet" />
+
+    <!--Font-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Butterfly+Kids&family=Roboto+Condensed:wght@300&display=swap" rel="stylesheet">
+
+</head>
+<body>
+    <div id="long-wrap">
+        <header>
+            <div id="header">
+                <a href="#" target="_blank">X</a>
+            </div>
+        </header>
+        <div class="logo-container">
+            <img class="logo" src="~/img/butterfly.png">
+        </div>
+
+        <div class="logo-space"></div>
+
+        <main role="main">
+            <div class="content">
+                @RenderBody()
+            </div>
+        </main>
+
+        <div class="long-wrapper">
+            <div class="long-btn">
+                <!--Menu Button-->
+                <input type="checkbox" class="menu-btn" id="menu-btn" />
+                <label for="menu-btn" class="menu-icon">
+                    <span class="long-icon"></span>
+                </label>
+
+                <!--Menu Display-->
+                <ul class="menu">
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Explore</a></li>
+                    <li><a href="#">Artist</a></li>
+                    <li><a href="#">Album</a></li>
+                    <li><a href="#">Store</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!--Audio-->
+        <div class="long-player">
+            <div class="wave">
+                <div class="wave1"></div>
+                <div class="wave1"></div>
+                <div class="wave1"></div>
+            </div>
+            <div class="track-info">
+                <img id="trackImage" src="">
+                <div class="track-details">
+                    <h5 id="trackName"></h5>
+                    <p class="subtilte" id="artistName"></p>
+                </div>
+            </div>
+            <div class="controls">
+                <i class="fas fa-step-backward" id="prevBtn"></i>
+                <audio id="musicPlayer" controls></audio>
+                <i class="fas fa-step-forward" id="nextBtn"></i>
+                <i class="fa-solid fa-shuffle" id="randomBtn"></i>
+            </div>
+        </div>
+
+
+        <footer>
+        </footer>
+
+    </div>
+
+    <!--gsap & ScrollTrigger-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.8.0/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.8.0/ScrollTrigger.min.js"></script>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
