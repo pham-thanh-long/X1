@@ -3,8 +3,11 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" href="~/img/butterfly.png" />
+
     <!--CSS-->
     <link href="~/css/site.css" rel="stylesheet" />
+    <link href="~/home/css/site.css" rel="stylesheet" />
 
     <!--Font-->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -76,8 +79,7 @@
         </div>
 
 
-        <footer>
-        </footer>
+        <footer></footer>
 
     </div>
 
@@ -90,4 +92,53 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
+
+
+<script>
+    $(document).ready(function () {
+
+        const musicPlayer = $('#musicPlayer')[0];
+        let currentSongId = null;
+        const songCache = {};
+
+        function playMusic(songId) {
+            if (currentSongId === songId) {
+                return;
+            }
+
+            if (songCache.hasOwnProperty(songId)) {
+                const musicUrl = songCache[songId];
+                musicPlayer.src = musicUrl;
+                musicPlayer.play();
+            } else {
+                musicPlayer.pause();
+                musicPlayer.currentTime = 0;
+
+                $.ajax({
+                    url: `http://localhost:666/api/Song/play-song/${songId}`,
+                    method: 'GET',
+                    xhrFields: {
+                        responseType: 'blob'
+                    },
+                    success: function (blob) {
+                        const musicUrl = URL.createObjectURL(blob);
+                        songCache[songId] = musicUrl;
+                        musicPlayer.src = musicUrl;
+                        musicPlayer.play();
+                    },
+                    error: function (error) {3
+                        console.error("Error when retrieving music files: ", error);
+                    }
+                });
+            }
+        }
+
+        $(document).on('click', '.play-song', function () {
+            var songId = $(this).data('song-id');
+            console.log(songId);
+            playMusic(songId);
+            currentSongId = songId;
+        });
+    });
+</script>
 </html>
