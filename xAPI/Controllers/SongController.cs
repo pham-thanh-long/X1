@@ -40,5 +40,27 @@ namespace xAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpGet("get-song-info/{SongId}")]
+        public IActionResult GetSongInfo(int SongId)
+        {
+            try
+            {
+                var song = repository.GetSong(SongId);
+                if(song == null)
+                {
+                    return NotFound();
+                }else
+                {
+                    return Ok(song);
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
     }
 }

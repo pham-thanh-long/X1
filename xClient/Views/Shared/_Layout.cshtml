@@ -96,10 +96,10 @@
 
 <script>
     $(document).ready(function () {
-
         const musicPlayer = $('#musicPlayer')[0];
         let currentSongId = null;
         const songCache = {};
+        const songInfoCache = {};
 
         function playMusic(songId) {
             if (currentSongId === songId) {
@@ -110,6 +110,7 @@
                 const musicUrl = songCache[songId];
                 musicPlayer.src = musicUrl;
                 musicPlayer.play();
+                updateSongInfo(songId);
             } else {
                 musicPlayer.pause();
                 musicPlayer.currentTime = 0;
@@ -125,12 +126,92 @@
                         songCache[songId] = musicUrl;
                         musicPlayer.src = musicUrl;
                         musicPlayer.play();
+
+                        updateSongInfo(songId);
                     },
-                    error: function (error) {3
+                    error: function (error) {
                         console.error("Error when retrieving music files: ", error);
                     }
                 });
             }
+        }
+
+        function updateSongInfo(songId) {
+            if (songInfoCache.hasOwnProperty(songId)) {
+                const songInfo = songInfoCache[songId];
+                updateUI(songInfo);
+            } else {
+                $.ajax({
+                    url: `http://localhost:666/api/Song/get-song-info/${songId}`,
+                    method: 'GET',
+                    success: function (songInfo) {
+                        /*songInfo = JSON.parse(songInfo);*/
+                        songInfoCache[songId] = songInfo;
+                        updateUI(songInfo);
+                    },
+                    error: function (error) {
+                        console.error("Error when retrieving track info: ", error);
+                    }
+                });
+            }
+        }
+
+        function updateUI(songInfo) {
+            console.log(songInfo);
+            $('#trackImage').attr('src', songInfo.image);
+            $('#trackName').html(`<a style="text-decoration: none" href="/album/${songInfo.albumId}">${songInfo.name}</a>`);
+
+            const performers = songInfo.performsOnSongs;
+            const artistNameElement = $('#artistName');
+            artistNameElement.empty();
+
+            let html = '';
+
+            for (const performer of performers) {
+                if (performer.artist.isMainArtist) {
+                    html = `<a style="text-decoration: none" href="/artist/${performer.artist.id}">${performer.artist.name}</a>`;
+                } else {
+                    html += `, <a style="text-decoration: none" href="/artist/${performer.artist.id}">${performer.artist.name}</a>`;
+                }
+            }
+
+            if (html.startsWith(', ')) {
+                html = html.slice(2);
+            }
+
+            //or
+
+            /*
+            const mainArtists = performers.filter(performer => performer.artist.isMainArtist);
+            const otherArtists = performers.filter(performer => !performer.artist.isMainArtist);
+            */
+
+            /*
+            performers.sort((a, b) => {
+                if (a.artist.isMainArtist && !b.artist.isMainArtist) {
+                    return -1;
+                } else if (!a.artist.isMainArtist && b.artist.isMainArtist) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            });
+
+            let html = '';
+
+            for (const artist of performers) {
+                html += `<a href="/artist/${artist.artist.id}">${artist.artist.name}</a>, `;
+            }
+
+            */
+
+            if (html.endsWith(', ')) {
+                html = html.slice(0, -2);
+            }
+
+
+            artistNameElement.html(html);
+
         }
 
         $(document).on('click', '.play-song', function () {

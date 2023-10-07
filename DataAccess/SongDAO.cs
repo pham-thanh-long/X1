@@ -69,7 +69,7 @@ namespace DataAccess
 
             using (var context = new xDbContext())
             {
-                var song = context.Songs.FirstOrDefault(s => s.Id == id);
+                var song = context.Songs.Include(s => s.Album).Include(s => s.PerformsOnSongs).ThenInclude(a => a.Artist).FirstOrDefault(s => s.Id == id);
                 if (song != null)
                 {
                     var songDto = new SongDto
@@ -91,8 +91,7 @@ namespace DataAccess
                         {
                             ArtistId = performer.Artist.Id,
                             IsMainArtist = performer.IsMainArtist,
-                            Artist = new ArtistDto { Id = performer.Artist.Id, Name = performer.Artist.Name },
-                            Song = new SongDto { Id = performer.Song.Id, Name = performer.Song.Name }
+                            Artist = new ArtistDto { Id = performer.Artist.Id, Name = performer.Artist.Name }
                         }).ToList()
                     };
                     return songDto;
