@@ -1,35 +1,63 @@
 ﻿
-
+<h2>Top Listens</h2>
 <div class="song_side">
     <div class="popular_song">
         <div class="h3">
-            <h3>Top Songs</h3>
             <div class="btn_s">
                 <i class="fa fa-arrow-left" aria-hidden="true"></i>
                 <i class="fa fa-arrow-right" aria-hidden="true"></i>
             </div>
         </div>
-        <div class="pop_song">
-            <li class="songItem">
-                <div class="img_play">
-                    <img src="https://images.complex.com/complex/images/c_fill,g_center,w_1200/fl_lossy,pg_1,q_auto/hzugce2ivvojyvf8lrny/daniel-caesar-freudian-cover" alt="popularsong" />
-                    @*Play button *@
-                    <i class="fa fa-play play-song" aria-hidden="true" data-song-id="2"></i>
-                </div>
-                <h4>
-                    <a href="/album/Index/">Best Part</a>
-                    <br />
-                    <span class="main-artist-name">
-                        <a href="/artist/Artist- ">Daniel Caesar</a>
-                    </span>
-                    <span class="sub-artist-name">
-
-                        <text>, </text> <a href="/artist/Artist- ">
-                            H.E.R
-                        </a>
-                    </span>
-                </h4>
-            </li>
+        <div class="pop_song" id="topSongsContainer">
+            
         </div>
     </div>
 </div>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        function displayTopSongs(topSongs) {
+            const topSongsContainer = $('#topSongsContainer');
+            topSongsContainer.empty();
+
+            topSongs.forEach(function (song) {
+                const songItem = $('<li class="songItem"></li>');
+
+                const imgPlay = $('<div class="img_play"></div>');
+                const img = $('<img>').attr('src', song.image);
+                const playButton = $('<i class="fa fa-play play-song" aria-hidden="true"></i>')
+                    .attr('data-song-id', song.id);
+
+                imgPlay.append(img, playButton);
+                const h4 = $('<h4></h4>');
+                const songLink = $('<a href="/album/Index/"></a>').text(song.name);
+                const mainArtistName = $('<span class="main-artist-name"></span>');
+                const mainArtistLink = $('<a href="/artist/Artist- "></a>').text(song.performsOnSongs[0].artist.name);
+                const subArtistName = $('<span class="sub-artist-name"></span>');
+                const subArtistLink = $('<a href="/artist/Artist-"></a>').text(song.performsOnSongs[1].artist.name);
+
+                mainArtistName.append(mainArtistLink);
+                subArtistName.append(', ', subArtistLink);
+
+                h4.append(songLink, '<br>', mainArtistName, subArtistName);
+
+                songItem.append(imgPlay, h4);
+
+                topSongsContainer.append(songItem);
+            });
+        }
+
+        $.ajax({
+            url: 'http://localhost:666/api/Song/top-10-songs',
+            method: 'GET',
+            success: function (data) {
+                displayTopSongs(data);
+                console.log(data);
+            },
+            error: function (error) {
+                console.error("Error when retrieving top songs: ", error);
+            }
+        });
+    });
+</script>
+

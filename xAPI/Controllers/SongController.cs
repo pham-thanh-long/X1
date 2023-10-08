@@ -41,6 +41,22 @@ namespace xAPI.Controllers
             }
         }
 
+        [HttpGet("top-10-songs")]
+        public IActionResult GetTopSongs()
+        {
+            try
+            {
+                var topSongs = repository.GetSongs();
+                topSongs = topSongs.OrderByDescending(song => song.ListenCount).Take(10).ToList();
+
+                return Ok(topSongs);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpGet("get-song-info/{SongId}")]
         public IActionResult GetSongInfo(int SongId)
         {

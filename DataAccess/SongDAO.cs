@@ -37,7 +37,7 @@ namespace DataAccess
         {
             using (var context = new xDbContext())
             {
-                return context.Songs.Select(song => new SongDto
+                return context.Songs.Include(s => s.Album).Include(s => s.PerformsOnSongs).ThenInclude(a => a.Artist).Select(song => new SongDto
                 {
                     Id = song.Id,
                     FileId = song.FileId,
