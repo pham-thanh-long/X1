@@ -291,6 +291,12 @@ body {
     display: none;
 }
 
+.controls .prevBtnpreBtn-custom {
+    border-radius: 10px;
+    border: 1px solid black;
+    cursor:pointer;
+}
+
 /*Menu=========*/
 
 .menu {

@@ -47,7 +47,7 @@
 
                 <!--Menu Display-->
                 <ul class="menu">
-                    <li><a href="#">Home</a></li>
+                    <li><a href="/Home/Index">Home</a></li>
                     <li><a href="#">Explore</a></li>
                     <li><a href="#">Artist</a></li>
                     <li><a href="#">Album</a></li>
@@ -71,10 +71,10 @@
                 </div>
             </div>
             <div class="controls">
-                <i class="fas fa-step-backward" id="prevBtn"></i>
+                <i class="fas fa-step-backward preBtn-custom" id="prevBtn" style="cursor:pointer"></i>
                 <audio id="musicPlayer" controls></audio>
-                <i class="fas fa-step-forward" id="nextBtn"></i>
-                <i class="fa-solid fa-shuffle" id="randomBtn"></i>
+                <i class="fas fa-step-forward" id="nextBtn" style="margin-right:20px; cursor:pointer"></i>
+                <i class="fa-solid fa-shuffle" id="randomBtn" style="cursor:pointer"></i>
             </div>
         </div>
 
@@ -100,6 +100,13 @@
         let currentSongId = null;
         const songCache = {};
         const songInfoCache = {};
+
+        //Queue track
+        var playTracks = [];
+        let currentTrackIndex = 0;
+
+        //Controls
+        let isRandomMode = false;
 
         function playMusic(songId) {
             if (currentSongId === songId) {
@@ -214,11 +221,131 @@
 
         }
 
+
         $(document).on('click', '.play-song', function () {
-            var songId = $(this).data('song-id');
-            console.log(songId);
-            playMusic(songId);
-            currentSongId = songId;
+            var trackId = $(this).data('song-id');
+            console.log(trackId);
+            playMusic(trackId);
+            currentTrackId = trackId;
+
+            //Push into Queue
+            playTracks = [];
+            currentTrackIndex = 0;
+            $('.play-song').each(function () {
+                playTracks.push($(this).data('song-id'));
+            });
+        });
+
+        //Controlls button
+        function updateControls() {
+            const prevBtn = $('#prevBtn');
+            const nextBtn = $('#nextBtn');
+            const randomBtn = $('#randomBtn');
+
+            if (playTracks.length === 0) {
+                prevBtn.addClass('disabled');
+                nextBtn.addClass('disabled');
+                randomBtn.addClass('disabled');
+            } else {
+                prevBtn.removeClass('disabled');
+                nextBtn.removeClass('disabled');
+                randomBtn.removeClass('disabled');
+
+                if (currentTrackIndex === 0) {
+                    prevBtn.addClass('disabled');
+                }
+            }
+        }
+
+        $(document).on('click', '#prevBtn', function () {
+            if (playTracks.length > 0 && currentTrackIndex > 0) {
+                currentTrackIndex--;
+                if (currentTrackIndex < 0) {
+                    currentTrackIndex = playTracks.length - 1;
+                }
+                const prevTrackId = playTracks[currentTrackIndex];
+                playMusic(prevTrackId);
+            }
+
+            console.log("Previous Buton: ",playTracks);
+            console.log("Previous Buton: ", currentTrackIndex);
+
+            updateControls();
+        });
+
+        $(document).on('click', '#nextBtn', function () {
+            if (playTracks.length > 0) {
+                currentTrackIndex++;
+                if (currentTrackIndex >= playTracks.length) {
+                    currentTrackIndex = 0;
+                }
+                const nextTrackId = playTracks[currentTrackIndex];
+                playMusic(nextTrackId);
+            }
+            updateControls();
+
+            console.log("Next Buton: ", playTracks);
+            console.log("Next Buton: ", currentTrackIndex);
+        });
+
+        $(document).on('click', '#randomBtn', function () {
+            if (playTracks.length > 0) {
+                isRandomMode = !isRandomMode;
+                $(this).toggleClass('active', isRandomMode);
+                updateControls();
+            }
+
+            console.log("RandomBtn - playTracks: ", playTracks);
+            console.log("RandomBtn - CurrentTrackIndex: ", currentTrackIndex);
+        });
+
+        function getRandomTrackIndex(excludeIndex) {
+            const availableTracks = playTracks.filter((_, index) => index !== excludeIndex);
+            const randomIndex = Math.floor(Math.random() * availableTracks.length);
+            return playTracks.indexOf(availableTracks[randomIndex]);
+        }
+
+        function playRandomTrack() {
+            if (isRandomMode) {
+                const randomTrackIndex = getRandomTrackIndex(currentTrackIndex);
+                const randomTrackId = playTracks[randomTrackIndex];
+                playMusic(randomTrackId);
+                currentTrackIndex = randomTrackIndex;
+            } else {
+                const nextTrackIndex = currentTrackIndex + 1;
+                if (nextTrackIndex < playTracks.length) {
+                    currentTrackIndex = nextTrackIndex;
+                } else {
+                    currentTrackIndex = 0;
+                }
+                const nextTrackId = playTracks[currentTrackIndex];
+                playMusic(nextTrackId);
+            }
+        }
+
+
+        $(document).on('click', '#prevBtn, #nextBtn', function () {
+            if (isRandomMode) {
+                playRandomTrack();
+            }
+        });
+
+        musicPlayer.addEventListener('ended', function () {
+            musicPlayer.pause();
+            musicPlayer.currentTime = 0;
+            if (isRandomMode) {
+                playRandomTrack();
+            } else {
+                const nextTrackIndex = currentTrackIndex + 1;
+                if (nextTrackIndex < playTracks.length) {
+                    currentTrackIndex = nextTrackIndex;
+                } else {
+                    currentTrackIndex = 0;
+                }
+                const nextTrackId = playTracks[currentTrackIndex];
+                playMusic(nextTrackId);
+            }
+            updateControls();
         });
     });
 </script>
