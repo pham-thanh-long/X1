@@ -1,1 +1,58 @@
-﻿
+﻿<!--Boostrap-->
+<link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+<link href="~/artisst/css/style.css" rel="stylesheet" />
+
+<div class="artist-wrapper">
+    <div class="artist-header">
+        <div class="artist-name">
+            <i class="play-icon fas fa-play"></i>
+            Daniel Caesar
+        </div>
+    </div>
+
+    <div class="container mt-5">
+        <div class="table-responsive">
+            <table class="table table-striped border-bottom-0">
+                <tr>
+                    <td><p>1</p></td>
+                    <td>
+                        <h3>Best Part</h3>
+                        <p>Daniel Caesar, H.E.R</p>
+                    </td>
+                    <td>
+                        <p> 3:29</p>
+                    </td>
+                    <td>
+                        <i class="far fa-heart"></i>
+                    </td>
+                    <td>
+                        <i class="fas fa-plus"></i>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            url: '',
+            method: 'GET',
+            success: function (data) {
+                const artistImage = data.artistImage;
+                const artistName = data.artistName;
+
+                updateArtistDetail(artistImage, artistName);
+            },
+            error: function (error) {
+                console.error(error);
+            }
+        });
+
+        function updateArtistDetail(imageUrl, artistName) {
+            $('.artist-header').css('background-image', 'url(' + imageUrl + ')');
+            $('.artist-name').text(artistName);
+        }
+    });
+</script>

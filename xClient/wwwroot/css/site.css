@@ -305,7 +305,7 @@ body {
     top: 0px;
     width: 100%;
     height: 100%;
-    background-color: #111111f1;
+    background-color: rgba(226,204,178,255);
     z-index: 102;
     display: none;
     justify-content: center;

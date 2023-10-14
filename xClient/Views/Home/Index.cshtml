@@ -1,18 +1,60 @@
-﻿
-<h2>Top Listens</h2>
+﻿<style>
+    #topSongsContainer {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .songItem {
+        width: calc(50% - 20px);
+        margin: 10px;
+        box-sizing: border-box;
+    }
+
+    .img_play {
+        position: relative;
+    }
+
+        .img_play img {
+            width: 550px;
+            height: 550px;
+        }
+
+    li {
+        list-style: none;
+    }
+
+    .main-artist-name > a, .sub-artist-name > a{
+        display: inline-block;
+        font-size: 20px;
+        margin-top: 13px;
+        color: #fff;
+        font-family: 'Butterfly Kids', cursive;
+        text-decoration: none !important
+    }
+
+    .fa-custom {
+        position: absolute;
+        font-size: 50px;
+        color: saddlebrown;
+        cursor: pointer;
+        transition: .3s linear;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        opacity: 0;
+    }
+
+    .img_play:hover .fa {
+        opacity: 1;
+    }
+
+</style>
+
 <div class="song_side">
-    <div class="popular_song">
-        <div class="h3">
-            <div class="btn_s">
-                <i class="fa fa-arrow-left" aria-hidden="true"></i>
-                <i class="fa fa-arrow-right" aria-hidden="true"></i>
-            </div>
-        </div>
-        <div class="pop_song" id="topSongsContainer">
-            
-        </div>
+    <div class="popular_song" id="topSongsContainer">
     </div>
 </div>
+
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script>
     $(document).ready(function () {
@@ -24,17 +66,39 @@
                 const songItem = $('<li class="songItem"></li>');
 
                 const imgPlay = $('<div class="img_play"></div>');
-                const img = $('<img>').attr('src', song.image);
-                const playButton = $('<i class="fa fa-play play-song" aria-hidden="true"></i>')
+
+                const img = $('<img>')
+                    .attr('src', song.image)
+                    .attr('data-image2', song.image2)
+                    .attr('data-image', song.image);
+
+                img.on('mouseenter', function () {
+                    const image2 = $(this).data('image2');
+                    $(this).attr('src', image2);
+                }).on('mouseleave', function () {
+                    const originalImage = $(this).data('image');
+                    $(this).attr('src', originalImage);
+                });
+
+                const playButton = $('<i class="fa fa-play fa-custom play-song" aria-hidden="true"></i>')
                     .attr('data-song-id', song.id);
 
                 imgPlay.append(img, playButton);
                 const h4 = $('<h4></h4>');
-                const songLink = $('<a href="/album/Index/"></a>').text(song.name);
+                const songLink = $('<a></a>')
+                    .attr('href', `/album/${song.album.id}`)
+                    .text(song.name);
+
                 const mainArtistName = $('<span class="main-artist-name"></span>');
-                const mainArtistLink = $('<a href="/artist/Artist- "></a>').text(song.performsOnSongs[0].artist.name);
+                const mainArtistLink = $('<a></a>')
+                    .attr('href', '/artist/Artist-' + song.performsOnSongs[0].artist.id)
+                    .text(song.performsOnSongs[0].artist.name);
+
                 const subArtistName = $('<span class="sub-artist-name"></span>');
-                const subArtistLink = $('<a href="/artist/Artist-"></a>').text(song.performsOnSongs[1].artist.name);
+                const subArtistLink = $('<a></a>')
+                    .attr('href', '/artist/Artist-' + song.performsOnSongs[1].artist.id)
+                    .text(song.performsOnSongs[1].artist.name);
+
 
                 mainArtistName.append(mainArtistLink);
                 subArtistName.append(', ', subArtistLink);
@@ -58,6 +122,8 @@
                 console.error("Error when retrieving top songs: ", error);
             }
         });
+
+
     });
 </script>
 

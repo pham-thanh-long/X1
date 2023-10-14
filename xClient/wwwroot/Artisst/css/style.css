@@ -1,0 +1,30 @@
+﻿
+.artist-wrapper {
+    background-color: rgb(33, 37, 41) !important;
+}
+
+h3, p, i {
+    color: rgba(226,204,178,255);
+}
+
+.artist-header {
+    position: relative;
+    background-image: url('https://pbs.twimg.com/media/EYGn744WkAk15cn?format=jpg&name=4096x4096');
+    background-size: cover;
+    background-position: center;
+    height: 600px;
+    color: #fff;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.artist-name {
+    font-size: 36px;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
