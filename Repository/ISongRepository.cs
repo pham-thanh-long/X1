@@ -11,6 +11,7 @@ namespace Repository
     public interface ISongRepository
     {
         List<SongDto> GetSongs();
+        List<SongDto> GetTopSongsByListenCount(int artistId, int count);
         SongDto GetSong(int id);
         Song PlaySong(int songId);
         void AddSong(Song song);

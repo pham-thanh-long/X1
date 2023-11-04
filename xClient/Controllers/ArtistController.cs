@@ -7,6 +7,7 @@ namespace xClient.Controllers
         [Route("/[controller]/Artist-{id}")]
         public IActionResult Index(int id)
         {
+            ViewBag.ArtistId = id;
             return View();
         }
     }

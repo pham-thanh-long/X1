@@ -86,7 +86,7 @@
                 imgPlay.append(img, playButton);
                 const h4 = $('<h4></h4>');
                 const songLink = $('<a></a>')
-                    .attr('href', `/album/${song.album.id}`)
+                    .attr('href', `/artist-`+ song.performsOnSongs[0].artist.id + `/album-${song.albumId}`)
                     .text(song.name);
 
                 const mainArtistName = $('<span class="main-artist-name"></span>');

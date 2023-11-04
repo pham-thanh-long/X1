@@ -1,0 +1,48 @@
+﻿<style>
+    #song-list li {
+        margin-bottom: 50px;
+    }
+</style>
+
+<div id="album-details">
+    <img id="album-image" src="" alt="Album Image" style="max-width: 300px; max-height: 300px;">
+    <h3 id="album-title"></h3>
+    <p id="artist-name"></p>
+
+    <h4>Songs:</h4>
+    <ul id="song-list" style="float: left; list-style-type: none; margin-left: 10px;">
+            
+    </ul>
+</div>
+
+<script src="/lib/jquery//dist/jquery.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        var artistId = @ViewBag.ArtistId;
+        var albumId = @ViewBag.AlbumId;
+
+        $.ajax({
+            url: `http://localhost:666/api/Album/${artistId}/${albumId}`,
+            method: 'GET',
+            success: function (data) {
+                $('#album-title').text(data.title);
+                $('#artist-name').text('Artist: ' + data.artist.name);
+                $('#album-image').attr('src', data.image);
+
+                var songList = $('#song-list');
+                data.songs.forEach(function (song) {
+                    var listItem = $('<li>');
+                    var songImage = $('<img>').attr('src', song.image).attr('alt', 'Song Image').width(50);
+                    var songTitle = $('<span>').text(song.name);
+                    listItem.append(songImage, songTitle);
+                    songList.append(listItem);
+                });
+            },
+            error: function (error) {
+                console.error(error);
+            }
+        });
+    });
+
+</script>

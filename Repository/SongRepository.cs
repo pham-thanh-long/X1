@@ -21,6 +21,8 @@ namespace Repository
 
         public List<SongDto> GetSongs() => SongDAO.Instance.GetSongs();
 
+        public List<SongDto> GetTopSongsByListenCount(int artistId, int count) => SongDAO.Instance.GetTopSongsByListenCount(artistId, count);
+
         public Song PlaySong(int songId) => SongDAO.Instance.PlaySong(songId);
     }
 }

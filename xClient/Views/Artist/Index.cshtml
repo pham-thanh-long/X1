@@ -1,49 +1,56 @@
 ﻿<!--Boostrap-->
-<link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <link href="~/artisst/css/style.css" rel="stylesheet" />
+<body>
 
-<div class="artist-wrapper">
-    <div class="artist-header">
-        <div class="artist-name">
-            <i class="play-icon fas fa-play"></i>
-            Daniel Caesar
+
+    <div class="artist-wrapper">
+        <div class="artist-header">
+            <div class="artist-name">
+                <i class="play-icon fas fa-play" style="cursor:pointer" id="playAllTopTracks"></i>
+            </div>
+            <button type="button" id="followArtist" data-artist-id="">Follow</button>
         </div>
-    </div>
 
-    <div class="container mt-5">
-        <div class="table-responsive">
-            <table class="table table-striped border-bottom-0">
-                <tr>
-                    <td><p>1</p></td>
-                    <td>
-                        <h3>Best Part</h3>
-                        <p>Daniel Caesar, H.E.R</p>
-                    </td>
-                    <td>
-                        <p> 3:29</p>
-                    </td>
-                    <td>
-                        <i class="far fa-heart"></i>
-                    </td>
-                    <td>
-                        <i class="fas fa-plus"></i>
-                    </td>
-                </tr>
-            </table>
+        <div class="container mt-5">
+            <div class="table-responsive">
+                <table class="custom-table">
+                </table>
+            </div>
         </div>
-    </div>
-</div>
 
+
+
+        <div class="album-grid">
+          
+            <div class="album-card">
+                
+            </div>
+        </div>
+
+
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    </div>
+</body>
 <script>
     $(document).ready(function () {
+        const artistId = @ViewBag.ArtistId;
+
         $.ajax({
-            url: '',
+            url: 'http://localhost:666/api/Artist/' + artistId,
             method: 'GET',
             success: function (data) {
-                const artistImage = data.artistImage;
-                const artistName = data.artistName;
+                const artistImage = data.image;
+                const artistName = data.name;
 
+                // Cập nhật thông tin nghệ sĩ
                 updateArtistDetail(artistImage, artistName);
+
+                // Cập nhật danh sách Song
+                updateTopSongs(artistId, 10);
+
+                // Hiển thị danh sách Album
+                displayAlbums(data.albums);
             },
             error: function (error) {
                 console.error(error);
@@ -54,5 +61,58 @@
             $('.artist-header').css('background-image', 'url(' + imageUrl + ')');
             $('.artist-name').text(artistName);
         }
+
+        function updateTopSongs(artistId, count) {
+            $.ajax({
+                url: `http://localhost:666/api/Song/artist-top-songs/${artistId}/${count}`,
+                method: 'GET',
+                success: function (data) {
+                    const songs = data;
+
+                    const songsTable = $('.custom-table');
+
+                    songs.forEach(function (song, index) {
+                        const row = $('<tr>');
+                        row.append($('<td>').text(index + 1));
+                        const imageColumn = $('<td>');
+                        const image = $(`<img>
+                                                    <div class="play-btn">
+                                                                <i class="fa-play play-song" aria-hidden="true" data-song-id="${song.id}"></i>
+                                                            </div>
+                                                `).attr('src', song.image);
+                        imageColumn.append(image);
+                        row.append(imageColumn);
+
+                        const titleColumn = $('<td>').append($('<h3>').text(song.name));
+                        const artistColumn = $('<td>').append($('<p>').text(song.artistName));
+                        const durationColumn = $('<td>').append($('<p>').text(song.duration));
+                        const heartColumn = $('<td>').append($('<i class="far fa-heart"></i>'));
+                        const plusColumn = $('<td>').append($('<i class="fas fa-plus"></i>'));
+
+                        row.append(titleColumn, artistColumn, durationColumn, heartColumn, plusColumn);
+
+                        songsTable.append(row);
+                    });
+                },
+                error: function (error) {
+                    console.error(error);
+                }
+            });
+        }
+
+        function displayAlbums(albums) {
+            const albumContainer = $('.album-grid');
+
+            albums.forEach(function (album) {
+                const albumCard = $('<div class="album-card" style="margin: 10px;">');
+                const albumImage = $('<img>').attr('src', album.image);
+                const albumTitle = $(`<a href="/artist/album/${album.id}>`).text(album.title);
+
+                albumCard.append(albumImage, albumTitle);
+                albumContainer.append(albumCard);
+            });
+        }
+
     });
 </script>
+

@@ -57,6 +57,27 @@ namespace xAPI.Controllers
             }
         }
 
+        [HttpGet("artist-top-songs/{artistId}/{count}")]
+        public IActionResult GetTopSongsByArtist(int artistId, int count)
+        {
+            try
+            {
+                var topSongsByArtist = repository.GetTopSongsByListenCount(artistId, count);
+
+                if (topSongsByArtist == null || topSongsByArtist.Count == 0)
+                {
+                    return NotFound();
+                }
+
+                return Ok(topSongsByArtist);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
         [HttpGet("get-song-info/{SongId}")]
         public IActionResult GetSongInfo(int SongId)
         {

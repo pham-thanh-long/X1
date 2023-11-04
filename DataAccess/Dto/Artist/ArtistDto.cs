@@ -17,6 +17,7 @@ namespace DataAccess.Dto.Artist
         public string? Country { get; set; }
         public string? Image { get; set; }
         public int AccountId { get; set; }
+        public int FollowTotal { get; set; }
         public AccountDto Account { get; set; }
         public List<AlbumDto> Albums { get; set; } = new List<AlbumDto>();
         public List<FollowDto> Follows { get; set; } = new List<FollowDto>();
