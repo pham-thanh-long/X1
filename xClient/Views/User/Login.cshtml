@@ -1,0 +1,100 @@
+﻿@{
+    Layout = null;
+}
+<link href="~/user/css/style.css" rel="stylesheet" />
+<div class="container" id="container">
+    <div class="form-container sign-up">
+        <form>
+            <h1>Create Account</h1>
+            <span>or use your email for registeration</span>
+            <input type="text" placeholder="Name">
+            <input type="email" placeholder="Email">
+            <input type="password" placeholder="Password">
+            <button>Sign Up</button>
+        </form>
+    </div>
+    <div class="form-container sign-in">
+        <form>
+            <h1>Sign In</h1>
+            <div class="social-icons">
+                <a href="#" class="icon"><i class="fa-brands fa-google-plus-g"></i></a>
+                <a href="#" class="icon"><i class="fa-brands fa-facebook-f"></i></a>
+                <a href="#" class="icon"><i class="fa-brands fa-github"></i></a>
+                <a href="#" class="icon"><i class="fa-brands fa-linkedin-in"></i></a>
+            </div>
+            <span>or use your email password</span>
+            <input type="email" placeholder="Email">
+            <input type="password" placeholder="Password">
+            <a href="#">Forget Your Password?</a>
+            <button type="submit">Sign In</button>
+        </form>
+    </div>
+    <div class="toggle-container">
+        <div class="toggle">
+            <div class="toggle-panel toggle-left">
+                <h1>Welcome Back!</h1>
+                <p>Enter your personal details to use all of site features</p>
+                <button class="hidden" id="login">Sign In</button>
+            </div>
+            <div class="toggle-panel toggle-right">
+                <h1>Hello, Friend!</h1>
+                <p>Register with your personal details to use all of site features</p>
+                <button class="hidden" id="register">Sign Up</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/user/js/main.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+    $(document).ready(function () {
+        $(".toggle-container .toggle").click(function () {
+            $(".form-container").toggleClass("sign-up sign-in");
+            $(".toggle-container .toggle").toggleClass("active");
+        });
+
+        $("#register").click(function () {
+            var name = $("input[placeholder='Name']").val();
+            var email = $("input[placeholder='Email']").val();
+            var password = $("input[placeholder='Password']").val();
+
+            $.ajax({
+                url: 'http://localhost:666/api/Account/Register',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    Name: name,
+                    Email: email,
+                    Password: password
+                }),
+                success: function (data) {
+                    console.log(data);
+                },
+                error: function (error) {
+                    console.error(error);
+                }
+            });
+        });
+
+        $("#login").click(function () {
+            var email = $("input[placeholder='Email']").val();
+            var password = $("input[placeholder='Password']").val();
+
+            $.ajax({
+                url: 'http://localhost:666/api/Account/Login',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    Email: email,
+                    Password: password
+                }),
+                success: function (data) {
+                    console.log(data);
+                },
+                error: function (error) {
+                    console.error(error);
+                }
+            });
+        });
+    });
+</script>

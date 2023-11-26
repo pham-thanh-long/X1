@@ -1,0 +1,52 @@
+﻿#topSongsContainer {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.songItem {
+    width: calc(50% - 20px);
+    margin: 10px;
+    box-sizing: border-box;
+}
+
+.img_play {
+    position: relative;
+}
+
+    .img_play img {
+        width: 550px;
+        height: 550px;
+    }
+
+.h4, .main-artist-name, .sub-artist-name {
+    font-size: 16px;
+}
+
+li {
+    list-style: none;
+}
+
+a {
+    display: inline-block;
+    font-size: 20px;
+    margin-top: 13px;
+    color: #fff !important;
+    font-family: 'Butterfly Kids' !important, cursive;
+    text-decoration: none !important
+}
+
+.fa {
+    position: absolute;
+    font-size: 50px;
+    color: saddlebrown;
+    cursor: pointer;
+    transition: .3s linear;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+}
+
+.img_play:hover .fa {
+    opacity: 1;
+}

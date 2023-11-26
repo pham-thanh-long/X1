@@ -1,0 +1,343 @@
+* {
+    padding: 0;
+    margin: 0;
+    font-weight: 400;
+    letter-spacing: .08px;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #070606;
+    color: rgba(226,204,178,255);
+    font-family: 'Roboto Condensed', sans-serif;
+    font-size: 15px;
+    background-repeat: no-repeat;
+}
+
+#long-wrap {
+    background-color: #070606;
+    height: 1400px;
+    text-align: center;
+}
+
+#header {
+    background-color: #070606;
+    box-shadow: 0 0 70px 0 hsla(0,0%,66%,.27);
+    border-bottom: 1px solid rgb(0, 0, 255, .2);
+    padding: 12px 10px;
+    text-align: center;
+    top: 0;
+    display: block;
+    margin-bottom: 50px;
+    z-index: 100;
+    line-height: 1.3;
+    position: fixed;
+    left: 0;
+    right: 0;
+    transition: all 0.3s ease;
+}
+
+    #header, #header:after {
+        position: fixed;
+        left: 0;
+        right: 0;
+    }
+
+@media (max-width: 768px) {
+    #header {
+        font-size: 13px;
+    }
+}
+
+#header > a {
+    color: #fff;
+    font-family: 'Butterfly Kids', cursive;
+    text-decoration: none;
+    text-transform: uppercase;
+}
+
+.logo {
+    width: 111px;
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 0em;
+    z-index: 111;
+}
+
+.logo-space {
+    width: 100%;
+    height: 100vh;
+}
+
+.content {
+    width: 100%;
+    height: 100vh;
+    padding: 0 4em;
+}
+
+    .content img {
+        width: 100%;
+    }
+
+/* img {
+    margin-bottom: 4em;
+} */
+
+.long-player {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    background-color: #f1f3f4;
+    height: 65px;
+    width: 100%;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+}
+
+    .long-player .wave {
+        width: 30px;
+        height: 30px;
+        padding-bottom: 5px;
+        display: flex;
+        align-items: flex-end;
+        margin-right: 10px;
+    }
+
+        .long-player .wave .wave1 {
+            width: 3px;
+            height: 10px;
+            margin-right: 3px;
+            border-radius: 10px 10px 0px 0px;
+            background: rgb(0, 0, 255);
+            animation: unset;
+        }
+
+            .long-player .wave .wave1:nth-child(2) {
+                height: 13px;
+            }
+
+            .long-player .wave .wave1:nth-child(3) {
+                height: 8px;
+            }
+
+    .long-player .active2 .wave1 {
+        animation: wave 0.5s linear infinite;
+    }
+
+        .long-player .active2 .wave1:nth-child(2) {
+            animation-delay: 0.4s;
+        }
+
+        .long-player .active2 .wave1:nth-child(3) {
+            animation-delay: 0.8s;
+        }
+
+@keyframes wave {
+    0% {
+        height: 10px;
+    }
+
+    50% {
+        height: 15px;
+    }
+
+    100% {
+        height: 10px;
+    }
+}
+
+
+.track-info {
+    display: flex;
+    align-items: center;
+}
+
+    .track-info img {
+        width: 50px;
+        height: 50px;
+        margin-right: 10px;
+    }
+
+.track-details {
+    color: #060606;
+}
+
+    .track-details h5,
+    .track-details p {
+        
+        text-align:start; !important;
+        color: rgb(0, 0, 255);
+        font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        font-size: 16px;
+        padding:1px;
+    }
+
+
+.controls {
+    flex-grow: 0.9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+    .controls i {
+        color: #666666;
+    }
+
+        .controls i.disabled {
+            color: #606060;
+        }
+
+        .controls i.active {
+            color: black;
+        }
+
+        .controls i#randomBtn.active {
+            color: blue;
+        }
+
+
+
+/* button {
+    background-color: transparent;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    font-size: 16px;
+    margin-right: 10px;
+} */
+
+#musicPlayer {
+    width: 900px;
+    margin: 0 10px;
+}
+
+/*Menu*/
+.long-wrapper {
+    display: inline-block;
+    position: fixed;
+    bottom: 10%;
+    left: 0;
+    right: 0;
+    z-index: 666;
+}
+
+.long-btn {
+    border-radius: 20px;
+    border: 1px solid white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 7px;
+    max-width: 60px;
+    margin: auto;
+    width: 100%;
+}
+
+    .long-btn .menu-icon {
+        cursor: pointer;
+        float: right;
+        padding: 20px 5px;
+        z-index: 103;
+    }
+
+        .long-btn .menu-icon .long-icon {
+            background-color: #fff;
+            display: block;
+            height: 2px;
+            width: 25px;
+            position: relative;
+            transition: 0.2s ease-out;
+        }
+
+            .long-btn .menu-icon .long-icon::before,
+            .long-btn .menu-icon .long-icon::after {
+                background-color: #fff;
+                content: '';
+                position: absolute;
+                display: block;
+                width: 100%;
+                height: 100%;
+                transition: all ease-out 0.2s;
+            }
+
+            .long-btn .menu-icon .long-icon::before {
+                top: 8px;
+            }
+
+            .long-btn .menu-icon .long-icon::after {
+                top: -8px;
+            }
+
+    .long-btn .menu-btn:checked ~ .menu-icon .long-icon {
+        background-color: transparent;
+    }
+
+        .long-btn .menu-btn:checked ~ .menu-icon .long-icon::before {
+            transform: rotate(-45deg);
+            top: 0px;
+        }
+
+        .long-btn .menu-btn:checked ~ .menu-icon .long-icon::after {
+            transform: rotate(45deg);
+            top: 0px;
+        }
+
+.menu-btn {
+    display: none;
+}
+
+.controls .prevBtnpreBtn-custom {
+    border-radius: 10px;
+    border: 1px solid black;
+    cursor:pointer;
+}
+
+/*Menu=========*/
+
+.menu {
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(226,204,178,255);
+    z-index: 102;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    animation: fade 0.3s;
+    list-style: none;
+}
+
+    .menu li a {
+        color: #fff;
+        margin: 0px 40px;
+        font-size: 2rem;
+        font-family: Roboto Condensed;
+        transition: all ease 0.3s;
+        text-decoration: none;
+    }
+
+        .menu li a:hover {
+            font-size: 2.3rem;
+            color: rgb(0, 0, 255);
+            transition: all ease 0.3s;
+        }
+
+.long-btn .menu-btn:checked ~ .menu {
+    display: flex;
+}
+
+@keyframes fade {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}

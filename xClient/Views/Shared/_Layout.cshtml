@@ -1,0 +1,348 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" href="~/img/butterfly.png" />
+
+    <!--CSS-->
+    <link href="~/css/site.css" rel="stylesheet" />
+    <!--Font-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Butterfly+Kids&family=Roboto+Condensed:wght@300&display=swap" rel="stylesheet">
+
+</head>
+<body>
+    <div id="long-wrap">
+        <header>
+            <div id="header">
+                <a href="#" target="_blank">X</a>
+            </div>
+        </header>
+        <div class="logo-container">
+            <img class="logo" src="~/img/butterfly.png" />
+        </div>
+
+        <div class="logo-space"></div>
+
+        <main role="main">
+            <div class="content">
+                @RenderBody()
+            </div>
+        </main>
+
+        <div class="long-wrapper">
+            <div class="long-btn">
+                <!--Menu Button-->
+                <input type="checkbox" class="menu-btn" id="menu-btn" />
+                <label for="menu-btn" class="menu-icon">
+                    <span class="long-icon"></span>
+                </label>
+
+                <!--Menu Display-->
+                <ul class="menu">
+                    <li><a href="/Home/Index">Home</a></li>
+                    <li><a href="#">Explore</a></li>
+                    <li><a href="#">Artist</a></li>
+                    <li><a href="#">Album</a></li>
+                    <li><a href="#">Store</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!--Audio-->
+        <div class="long-player">
+            <div class="wave">
+                <div class="wave1"></div>
+                <div class="wave1"></div>
+                <div class="wave1"></div>
+            </div>
+            <div class="track-info">
+                <img id="trackImage" src="">
+                <div class="track-details">
+                    <h5 id="trackName"></h5>
+                    <p class="subtilte" id="artistName"></p>
+                </div>
+            </div>
+            <div class="controls">
+                <i class="fas fa-step-backward preBtn-custom" id="prevBtn" style="cursor:pointer"></i>
+                <audio id="musicPlayer" controls></audio>
+                <i class="fas fa-step-forward" id="nextBtn" style="margin-right:20px; cursor:pointer"></i>
+                <i class="fa-solid fa-shuffle" id="randomBtn" style="cursor:pointer"></i>
+            </div>
+        </div>
+
+
+        <footer></footer>
+
+    </div>
+
+    <!--gsap & ScrollTrigger-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.8.0/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.8.0/ScrollTrigger.min.js"></script>
+
+    <script src="~/lib/jquery/dist/jquery.min.js" defer></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+
+
+<script>
+    $(document).ready(function () {
+        const musicPlayer = $('#musicPlayer')[0];
+        let currentSongId = null;
+        const songCache = {};
+        const songInfoCache = {};
+
+        //Queue track
+        var playTracks = [];
+        let currentTrackIndex = 0;
+
+        //Controls
+        let isRandomMode = false;
+
+        function playMusic(songId) {
+            if (currentSongId === songId) {
+                return;
+            }
+
+            if (songCache.hasOwnProperty(songId)) {
+                const musicUrl = songCache[songId];
+                musicPlayer.src = musicUrl;
+                musicPlayer.play();
+                updateSongInfo(songId);
+            } else {
+                musicPlayer.pause();
+                musicPlayer.currentTime = 0;
+
+                $.ajax({
+                    url: `http://localhost:666/api/Song/play-song/${songId}`,
+                    method: 'GET',
+                    xhrFields: {
+                        responseType: 'blob'
+                    },
+                    success: function (blob) {
+                        const musicUrl = URL.createObjectURL(blob);
+                        songCache[songId] = musicUrl;
+                        musicPlayer.src = musicUrl;
+                        musicPlayer.play();
+
+                        updateSongInfo(songId);
+                    },
+                    error: function (error) {
+                        console.error("Error when retrieving music files: ", error);
+                    }
+                });
+            }
+        }
+
+        function updateSongInfo(songId) {
+            if (songInfoCache.hasOwnProperty(songId)) {
+                const songInfo = songInfoCache[songId];
+                updateUI(songInfo);
+            } else {
+                $.ajax({
+                    url: `http://localhost:666/api/Song/get-song-info/${songId}`,
+                    method: 'GET',
+                    success: function (songInfo) {
+                        /*songInfo = JSON.parse(songInfo);*/
+                        songInfoCache[songId] = songInfo;
+                        updateUI(songInfo);
+                    },
+                    error: function (error) {
+                        console.error("Error when retrieving track info: ", error);
+                    }
+                });
+            }
+        }
+
+        function updateUI(songInfo) {
+            console.log(songInfo);
+            $('#trackImage').attr('src', songInfo.image);
+            $('#trackName').html(`<a style="text-decoration: none" href="/artist-${songInfo.artistId}/album-${songInfo.albumId}">${songInfo.name}</a>`);
+
+            const performers = songInfo.performsOnSongs;
+            const artistNameElement = $('#artistName');
+            artistNameElement.empty();
+
+            let html = '';
+
+            for (const performer of performers) {
+                if (performer.artist.isMainArtist) {
+                    html = `<a style="text-decoration: none" href="/artist/${performer.artist.id}">${performer.artist.name}</a>`;
+                } else {
+                    html += `, <a style="text-decoration: none" href="/artist/${performer.artist.id}">${performer.artist.name}</a>`;
+                }
+            }
+
+            if (html.startsWith(', ')) {
+                html = html.slice(2);
+            }
+
+            //or
+
+            /*
+            const mainArtists = performers.filter(performer => performer.artist.isMainArtist);
+            const otherArtists = performers.filter(performer => !performer.artist.isMainArtist);
+            */
+
+            /*
+            performers.sort((a, b) => {
+                if (a.artist.isMainArtist && !b.artist.isMainArtist) {
+                    return -1;
+                } else if (!a.artist.isMainArtist && b.artist.isMainArtist) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            });
+
+            let html = '';
+
+            for (const artist of performers) {
+                html += `<a href="/artist/${artist.artist.id}">${artist.artist.name}</a>, `;
+            }
+
+            */
+
+            if (html.endsWith(', ')) {
+                html = html.slice(0, -2);
+            }
+
+
+            artistNameElement.html(html);
+
+        }
+
+
+        $(document).on('click', '.play-song', function () {
+            var trackId = $(this).data('song-id');
+            console.log(trackId);
+            playMusic(trackId);
+            currentTrackId = trackId;
+
+            //Push into Queue
+            playTracks = [];
+            currentTrackIndex = 0;
+            $('.play-song').each(function () {
+                playTracks.push($(this).data('song-id'));
+            });
+        });
+
+        //Controlls button
+        function updateControls() {
+            const prevBtn = $('#prevBtn');
+            const nextBtn = $('#nextBtn');
+            const randomBtn = $('#randomBtn');
+
+            if (playTracks.length === 0) {
+                prevBtn.addClass('disabled');
+                nextBtn.addClass('disabled');
+                randomBtn.addClass('disabled');
+            } else {
+                prevBtn.removeClass('disabled');
+                nextBtn.removeClass('disabled');
+                randomBtn.removeClass('disabled');
+
+                if (currentTrackIndex === 0) {
+                    prevBtn.addClass('disabled');
+                }
+            }
+        }
+
+        $(document).on('click', '#prevBtn', function () {
+            if (playTracks.length > 0 && currentTrackIndex > 0) {
+                currentTrackIndex--;
+                if (currentTrackIndex < 0) {
+                    currentTrackIndex = playTracks.length - 1;
+                }
+                const prevTrackId = playTracks[currentTrackIndex];
+                playMusic(prevTrackId);
+            }
+
+            console.log("Previous Buton: ",playTracks);
+            console.log("Previous Buton: ", currentTrackIndex);
+
+            updateControls();
+        });
+
+        $(document).on('click', '#nextBtn', function () {
+            if (playTracks.length > 0) {
+                currentTrackIndex++;
+                if (currentTrackIndex >= playTracks.length) {
+                    currentTrackIndex = 0;
+                }
+                const nextTrackId = playTracks[currentTrackIndex];
+                playMusic(nextTrackId);
+            }
+            updateControls();
+
+            console.log("Next Buton: ", playTracks);
+            console.log("Next Buton: ", currentTrackIndex);
+        });
+
+        $(document).on('click', '#randomBtn', function () {
+            if (playTracks.length > 0) {
+                isRandomMode = !isRandomMode;
+                $(this).toggleClass('active', isRandomMode);
+                updateControls();
+            }
+
+            console.log("RandomBtn - playTracks: ", playTracks);
+            console.log("RandomBtn - CurrentTrackIndex: ", currentTrackIndex);
+        });
+
+        function getRandomTrackIndex(excludeIndex) {
+            const availableTracks = playTracks.filter((_, index) => index !== excludeIndex);
+            const randomIndex = Math.floor(Math.random() * availableTracks.length);
+            return playTracks.indexOf(availableTracks[randomIndex]);
+        }
+
+        function playRandomTrack() {
+            if (isRandomMode) {
+                const randomTrackIndex = getRandomTrackIndex(currentTrackIndex);
+                const randomTrackId = playTracks[randomTrackIndex];
+                playMusic(randomTrackId);
+                currentTrackIndex = randomTrackIndex;
+            } else {
+                const nextTrackIndex = currentTrackIndex + 1;
+                if (nextTrackIndex < playTracks.length) {
+                    currentTrackIndex = nextTrackIndex;
+                } else {
+                    currentTrackIndex = 0;
+                }
+                const nextTrackId = playTracks[currentTrackIndex];
+                playMusic(nextTrackId);
+            }
+        }
+
+
+        $(document).on('click', '#prevBtn, #nextBtn', function () {
+            if (isRandomMode) {
+                playRandomTrack();
+            }
+        });
+
+        musicPlayer.addEventListener('ended', function () {
+            musicPlayer.pause();
+            musicPlayer.currentTime = 0;
+            if (isRandomMode) {
+                playRandomTrack();
+            } else {
+                const nextTrackIndex = currentTrackIndex + 1;
+                if (nextTrackIndex < playTracks.length) {
+                    currentTrackIndex = nextTrackIndex;
+                } else {
+                    currentTrackIndex = 0;
+                }
+                const nextTrackId = playTracks[currentTrackIndex];
+                playMusic(nextTrackId);
+            }
+            updateControls();
+        });
+    });
+</script>
+</html>
