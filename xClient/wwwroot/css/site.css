@@ -57,13 +57,12 @@ body {
 }
 
 .logo {
-    margin-top: -1%;
     width: 111px;
     position: fixed;
     top: 0;
     left: 50%;
     transform: translateX(-50%);
-    padding: 1em;
+    padding: 0em;
     z-index: 111;
 }
 

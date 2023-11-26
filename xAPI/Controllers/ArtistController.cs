@@ -19,7 +19,6 @@ namespace xAPI.Controllers
             this.mapper = mapper;
         }
 
-        [Authorize]
         [HttpGet("{artistId}")]
         public IActionResult GetArtist(int artistId)
         {

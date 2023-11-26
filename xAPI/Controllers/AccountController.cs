@@ -66,5 +66,6 @@ namespace xAPI.Controllers
                 return Results.Unauthorized();
             }
         }
+
     }
 }

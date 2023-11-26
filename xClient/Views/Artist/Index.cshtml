@@ -1,37 +1,32 @@
-﻿<!--Boostrap-->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+﻿<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <link href="~/artisst/css/style.css" rel="stylesheet" />
-<body>
 
 
-    <div class="artist-wrapper">
-        <div class="artist-header">
-            <div class="artist-name">
-                <i class="play-icon fas fa-play" style="cursor:pointer" id="playAllTopTracks"></i>
-            </div>
-            <button type="button" id="followArtist" data-artist-id="">Follow</button>
+<div class="artist-wrapper">
+    <div class="artist-header">
+        <div class="artist-name">
+            <button><i class="play-icon fas fa-play" style="cursor:pointer" id="playAllTopTracks"></i>Play all</button>
         </div>
-
-        <div class="container mt-5">
-            <div class="table-responsive">
-                <table class="custom-table">
-                </table>
-            </div>
-        </div>
-
-
-
-        <div class="album-grid">
-          
-            <div class="album-card">
-                
-            </div>
-        </div>
-
-
-        <script src="~/lib/jquery/dist/jquery.min.js"></script>
     </div>
-</body>
+
+    <div class="container mt-5">
+        <div>
+            <table class="custom-table">
+            </table>
+        </div>
+    </div>
+
+
+
+    <div class="album-grid">
+
+        <div class="album-card">
+        </div>
+    </div>
+
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+</div>
 <script>
     $(document).ready(function () {
         const artistId = @ViewBag.ArtistId;
@@ -75,11 +70,11 @@
                         const row = $('<tr>');
                         row.append($('<td>').text(index + 1));
                         const imageColumn = $('<td>');
-                        const image = $(`<img>
-                                                    <div class="play-btn">
-                                                                <i class="fa-play play-song" aria-hidden="true" data-song-id="${song.id}"></i>
-                                                            </div>
-                                                `).attr('src', song.image);
+                        const image = $(`<img class="play-song" data-song-id="${song.id}">
+                                                        <div class="play-btn">
+                                                                    <i class="fa-play play-song" aria-hidden="true" data-song-id="${song.id}"></i>
+                                                                </div>
+                                                    `).attr('src', song.image);
                         imageColumn.append(image);
                         row.append(imageColumn);
 

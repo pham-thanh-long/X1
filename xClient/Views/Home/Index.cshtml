@@ -23,7 +23,7 @@
         list-style: none;
     }
 
-    .main-artist-name > a, .sub-artist-name > a{
+    .main-artist-name > a, .sub-artist-name > a {
         display: inline-block;
         font-size: 20px;
         margin-top: 13px;
@@ -85,8 +85,9 @@
 
                 imgPlay.append(img, playButton);
                 const h4 = $('<h4></h4>');
+
                 const songLink = $('<a></a>')
-                    .attr('href', `/artist-`+ song.performsOnSongs[0].artist.id + `/album-${song.albumId}`)
+                    .attr('href', `/artist-` + song.performsOnSongs[0].artist.id + `/album-${song.albumId}`)
                     .text(song.name);
 
                 const mainArtistName = $('<span class="main-artist-name"></span>');
@@ -95,13 +96,18 @@
                     .text(song.performsOnSongs[0].artist.name);
 
                 const subArtistName = $('<span class="sub-artist-name"></span>');
-                const subArtistLink = $('<a></a>')
-                    .attr('href', '/artist/Artist-' + song.performsOnSongs[1].artist.id)
-                    .text(song.performsOnSongs[1].artist.name);
+
+                if (song.performsOnSongs.length > 1) {
+                    const subArtistLink = $('<a></a>')
+                        .attr('href', '/artist/Artist-' + song.performsOnSongs[1].artist.id)
+                        .text(song.performsOnSongs[1].artist.name);
+
+                    subArtistName.append(', ', subArtistLink);
+                }
+
 
 
                 mainArtistName.append(mainArtistLink);
-                subArtistName.append(', ', subArtistLink);
 
                 h4.append(songLink, '<br>', mainArtistName, subArtistName);
 
